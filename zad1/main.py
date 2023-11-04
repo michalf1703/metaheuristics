@@ -2,21 +2,16 @@ import random
 import math
 
 # Parametry początkowe
-T = 500
-alpha = 0.999 * T
+T = 5
+alpha = 0.997 * T
 k = 0.1
-M = 3000
+M = 6200
 
 def f(x):
-    if -105 < x < -95:
-        return -2 * abs(x + 100) + 10
-    elif 95 < x < 105:
-        return -2.2 * abs(x - 100) + 11
-    else:
-        return 0
+    return x * math.sin(10 * math.pi * x) + 1
 
 def simulated_annealing(T, alpha, k, M):
-    current_solution = random.uniform(-150, 150)  # Rozwiązanie początkowe w przedziale <-150, 150>
+    current_solution = random.uniform(-1, 2)  # Rozwiązanie początkowe w przedziale [-1, 2]
     current_cost = f(current_solution)
     best_solution = current_solution
     best_cost = current_cost
@@ -24,10 +19,10 @@ def simulated_annealing(T, alpha, k, M):
     sB = best_solution
 
     for i in range(M):
-        new_solution = current_solution + random.uniform(0, 1)  # Generowanie sąsiedniego rozwiązania
-        new_solution = max(-150, min(new_solution, 150))  # Ograniczenie rozwiązania do przedziału <-150, 150>
-        new_cost = f(new_solution)
+        new_solution = current_solution + random.uniform(-0.1, 0.1)  # Rozszerzenie obszaru sąsiedztwa
+        new_solution = max(-1, min(new_solution, 2))
 
+        new_cost = f(new_solution)
         delta = new_cost - current_cost
 
         if delta < 0 or random.random() < math.exp(-delta / (k * T)):
@@ -46,7 +41,6 @@ def simulated_annealing(T, alpha, k, M):
 
     return best_solution, best_cost
 
-
 best_solution, best_cost = simulated_annealing(T, alpha, k, M)
 
-print(f"Najlepsze rozwiązanie: x = {best_solution}, f(x) = {best_cost}")
+print(f"Maksimum globalne funkcji: x = {best_solution}, f(x) = {best_cost}")
