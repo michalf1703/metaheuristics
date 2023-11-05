@@ -95,8 +95,8 @@ def menu():
             f = f2
             s1 = -150
             s2 = 150
-            r1 = -15
-            r2 = 15
+            r1 = -1
+            r2 = 1
             result = simulated_annealing(T, alpha, k, M, f, s1, s2, r1, r2)
         else:
             print("Zakończenie pracy programu.")
