@@ -47,7 +47,7 @@ def simulated_annealing(T, alpha, k, M, f, s1, s2):
         new_solution = random.uniform(max(s1, current_solution - 2 * T), min(s2, current_solution + 2 * T))
         new_cost = f(new_solution)
         delta = new_cost - current_cost
-
+                        #akceptowanie gorszego rozwiązania
         if delta > 0 or random.random() < math.exp(delta / (k * T)):
             current_solution = new_solution
             current_cost = new_cost
