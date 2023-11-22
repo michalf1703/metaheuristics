@@ -1,4 +1,3 @@
-import data
 from genetic_algorithm import *
 import matplotlib.pyplot as plt
 
@@ -18,10 +17,10 @@ if __name__ == '__main__':
         sums_2 = []
         sums_3 = []
         for j in range(50):
-            individuals = genetic_algorithm(is_roulette=False, number_of_iterations=i+2)
-            sums.append(calculate_population_adaptation_avg(individuals))
-            sums_2.append(calculate_population_adaptation_max(individuals))
-            sums_3.append(calculate_population_adaptation_min(individuals))
+            individuals = algorytm_genetyczny(czy_ruletka=False, liczba_iteracji=i+2)
+            sums.append(oblicz_srednie_przystosowanie_populacji(individuals))
+            sums_2.append(oblicz_maksymalne_przystosowanie_populacji(individuals))
+            sums_3.append(oblicz_minimalne_przystosowanie_populacji(individuals))
         averages.append(sum(sums) / len(sums))
         maximums.append(max(sums_2))
         minimums.append(min(sums_3))
@@ -32,10 +31,10 @@ if __name__ == '__main__':
         sums_2 = []
         sums_3 = []
         for j in range(50):
-            individuals = genetic_algorithm(is_roulette=True, number_of_iterations=i+2)
-            sums.append(calculate_population_adaptation_avg(individuals))
-            sums_2.append(calculate_population_adaptation_max(individuals))
-            sums_3.append(calculate_population_adaptation_min(individuals))
+            individuals = algorytm_genetyczny(czy_ruletka=True, liczba_iteracji=i+2)
+            sums.append(oblicz_srednie_przystosowanie_populacji(individuals))
+            sums_2.append(oblicz_maksymalne_przystosowanie_populacji(individuals))
+            sums_3.append(oblicz_minimalne_przystosowanie_populacji(individuals))
         averages_2.append(sum(sums) / len(sums))
         maximums_2.append(max(sums_2))
         minimums_2.append(min(sums_3))
@@ -48,14 +47,14 @@ if __name__ == '__main__':
     plt.plot(x_values, averages_2, "#ff6969")
     plt.plot(x_values, maximums_2, "#ff0505")
     plt.plot(x_values, [BAG_MAX_VALUE for x in range(NUMBERS)])
-    plt.legend(["elite selection, minimum",
-                "elite selection, average",
-                "elite selection, maximum",
-                "roulette selection, minimum",
-                "roulette selection, average",
-                "roulette selection, maximum",
-                "max adaptation value"
+    plt.legend(["selekcja elitarna, minimum",
+                "selekcja elitarna, średnia",
+                "selekcja elitarna, maksimum",
+                "koło ruletki, minimum",
+                "koło ruletki, średnia",
+                "koło ruletki, maksimum",
+                "maksymalna warotść adaptacji"
                 ])
-    plt.xlabel("number_of_iterations")
-    plt.ylabel("individual adaptation in final population")
+    plt.xlabel("liczba iteracji")
+    plt.ylabel("adaptacja indywidualna w populacji końcowej")
     plt.show()
