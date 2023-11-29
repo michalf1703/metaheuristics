@@ -2,7 +2,7 @@ import random
 from bitarray.util import urandom
 from data import DATA, BAG_MAX_WEIGHT, BAG_MAX_VALUE
 
-# Funkcja zwracająca osobnika z losowymi genami
+# Funkcja zwracająca osobnika z losowymi genami (26-tyle jest przedmiotów)
 def losowy_osobnik():
     return urandom(26)
 
@@ -44,7 +44,6 @@ def oblicz_przystosowanie(osobnik):
     else:
         return suma_wartosci
 
-# Funkcja zwracająca rodziców wybranych do krzyżowania
 def selekcja_ruletkowa(populacja):
     suma_przystosowania = oblicz_sume_przystosowania_populacji(populacja)
     if suma_przystosowania == 0:
@@ -56,6 +55,7 @@ def selekcja_ruletkowa(populacja):
                              weights=list(tabela_prawdopodobienstw.values()),
                              k=len(populacja))
     return [populacja[indeks] for indeks in indeksy]
+
 
 # Funkcja zwracająca rodziców wybranych do krzyżowania
 def selekcja_elitarna(populacja):
@@ -90,6 +90,7 @@ def krzyzowanie_genow(rodzice, czy_jednopunktowe):
         return [rodzice[0][:punkt_krzyzowania] + rodzice[1][punkt_krzyzowania:punkt_krzyzowania_2] + rodzice[0][punkt_krzyzowania_2:],
                 rodzice[1][:punkt_krzyzowania] + rodzice[0][punkt_krzyzowania:punkt_krzyzowania_2] + rodzice[1][punkt_krzyzowania_2:]]
 
+
 # Funkcja zwracająca losowe pary z populacji
 def wybierz_pary(populacja):
     pary = []
@@ -121,19 +122,18 @@ def mutuj_populacje(populacja, prawdopodobienstwo):
 # Funkcja zwracająca finalną populację wygenerowaną przez algorytm genetyczny
 def algorytm_genetyczny(rozmiar_populacji=30,
                         liczba_iteracji=30,
-                        prawdopodobienstwo_krzyzowania=1,
-                        prawdopodobienstwo_mutacji=0,
-                        czy_ruletka=True,
+                        prawdopodobienstwo_krzyzowania=0.8,
+                        prawdopodobienstwo_mutacji=0.4,
+                        ruletka=True,
                         pozadane_przystosowanie=BAG_MAX_VALUE,
-                        czy_jednopunktowe=True):
+                        jednopunktowe=False):
     populacja = []
     for i in range(rozmiar_populacji):
         populacja.append(losowy_osobnik())
-
     for i in range(liczba_iteracji):
-        ocalali, rodzice = wybierz_rodzicow(populacja, prawdopodobienstwo_krzyzowania, czy_ruletka)
+        ocalali, rodzice = wybierz_rodzicow(populacja, prawdopodobienstwo_krzyzowania, ruletka)
         pary = wybierz_pary(rodzice)
-        dzieci = mutuj_populacje(nowa_generacja(pary, czy_jednopunktowe), prawdopodobienstwo_mutacji)
+        dzieci = mutuj_populacje(nowa_generacja(pary, jednopunktowe), prawdopodobienstwo_mutacji)
         populacja = ocalali + dzieci
         if oblicz_srednie_przystosowanie_populacji(populacja) >= pozadane_przystosowanie:
             return populacja

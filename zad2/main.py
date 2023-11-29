@@ -17,7 +17,7 @@ if __name__ == '__main__':
         sums_2 = []
         sums_3 = []
         for j in range(50):
-            individuals = algorytm_genetyczny(czy_ruletka=False, liczba_iteracji=i+2)
+            individuals = algorytm_genetyczny(ruletka=False, liczba_iteracji=i + 2)
             sums.append(oblicz_srednie_przystosowanie_populacji(individuals))
             sums_2.append(oblicz_maksymalne_przystosowanie_populacji(individuals))
             sums_3.append(oblicz_minimalne_przystosowanie_populacji(individuals))
@@ -31,7 +31,7 @@ if __name__ == '__main__':
         sums_2 = []
         sums_3 = []
         for j in range(50):
-            individuals = algorytm_genetyczny(czy_ruletka=True, liczba_iteracji=i+2)
+            individuals = algorytm_genetyczny(ruletka=True, liczba_iteracji=i + 2)
             sums.append(oblicz_srednie_przystosowanie_populacji(individuals))
             sums_2.append(oblicz_maksymalne_przystosowanie_populacji(individuals))
             sums_3.append(oblicz_minimalne_przystosowanie_populacji(individuals))
