@@ -46,7 +46,6 @@ if __name__ == '__main__':
     plt.plot(x_values, minimums_2, "#ffa6a6")
     plt.plot(x_values, averages_2, "#ff6969")
     plt.plot(x_values, maximums_2, "#ff0505")
-    plt.plot(x_values, [BAG_MAX_VALUE for x in range(NUMBERS)])
     plt.legend(["selekcja elitarna, minimum",
                 "selekcja elitarna, średnia",
                 "selekcja elitarna, maksimum",

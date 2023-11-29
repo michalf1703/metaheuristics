@@ -1,6 +1,6 @@
 import random
 from bitarray.util import urandom
-from data import DATA, BAG_MAX_WEIGHT, BAG_MAX_VALUE
+from data import DATA, BAG_MAX_WEIGHT
 
 # Funkcja zwracająca osobnika z losowymi genami (26-tyle jest przedmiotów)
 def losowy_osobnik():
@@ -25,11 +25,10 @@ def oblicz_maksymalne_przystosowanie_populacji(populacja):
     return maksimum
 
 def oblicz_minimalne_przystosowanie_populacji(populacja):
-    minimum = BAG_MAX_VALUE
-    for osobnik in populacja:
-        if minimum > oblicz_przystosowanie(osobnik):
-            minimum = oblicz_przystosowanie(osobnik)
-    return minimum
+    if not populacja:
+        return None
+    return min(oblicz_przystosowanie(osobnik) for osobnik in populacja)
+
 
 # Funkcja zwracająca wartość przystosowania jednego osobnika
 def oblicz_przystosowanie(osobnik):
@@ -125,7 +124,6 @@ def algorytm_genetyczny(rozmiar_populacji=30,
                         prawdopodobienstwo_krzyzowania=0.8,
                         prawdopodobienstwo_mutacji=0.4,
                         ruletka=True,
-                        pozadane_przystosowanie=BAG_MAX_VALUE,
                         jednopunktowe=False):
     populacja = []
     for i in range(rozmiar_populacji):
@@ -135,6 +133,4 @@ def algorytm_genetyczny(rozmiar_populacji=30,
         pary = wybierz_pary(rodzice)
         dzieci = mutuj_populacje(nowa_generacja(pary, jednopunktowe), prawdopodobienstwo_mutacji)
         populacja = ocalali + dzieci
-        if oblicz_srednie_przystosowanie_populacji(populacja) >= pozadane_przystosowanie:
-            return populacja
     return populacja
