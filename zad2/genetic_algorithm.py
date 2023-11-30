@@ -2,7 +2,7 @@ import random
 from bitarray.util import urandom
 from data import DATA, BAG_MAX_WEIGHT
 
-# Funkcja zwracająca osobnika z losowymi genami (26-tyle jest przedmiotów)
+#unrandom -> ciag losowych bitow o dl 26 (tyle jest przedmiotow)
 def losowy_osobnik():
     return urandom(26)
 
@@ -35,6 +35,7 @@ def oblicz_przystosowanie(osobnik):
     suma_wagi = 0
     suma_wartosci = 0
     for i in range(len(osobnik)):
+        #sprawdzamy czy w danym miejscu ustawione jest 1
         if osobnik[i]:
             suma_wagi += DATA[i][1]
             suma_wartosci += DATA[i][2]
@@ -45,11 +46,12 @@ def oblicz_przystosowanie(osobnik):
 
 def selekcja_ruletkowa(populacja):
     suma_przystosowania = oblicz_sume_przystosowania_populacji(populacja)
-    if suma_przystosowania == 0:
+    if suma_przystosowania == 0: #nie mozna przeprowadzic ruletki jak 0
         return populacja
     tabela_prawdopodobienstw = {}
     for i in range(len(populacja)):
         tabela_prawdopodobienstw[i] = oblicz_przystosowanie(populacja[i]) / suma_przystosowania
+    #wybor losowych indeksow z uwzglednieniem prawdopodobienstw
     indeksy = random.choices(list(tabela_prawdopodobienstw.keys()),
                              weights=list(tabela_prawdopodobienstw.values()),
                              k=len(populacja))
@@ -61,13 +63,16 @@ def selekcja_elitarna(populacja):
     tabela_rankingowa = {}
     for i in range(len(populacja)):
         tabela_rankingowa[i] = oblicz_przystosowanie(populacja[i])
+    #posortowanie według malejącego przystosowania
     indeks = sorted(tabela_rankingowa.items(), key=lambda item: -item[1])
     lepsza_polowa = [populacja[indeks[i][0]] for i in range(int(len(populacja) / 2))]
     return lepsza_polowa + lepsza_polowa
 
 # Funkcja zwracająca ocalałych i rodziców wybranych do krzyżowania
 def wybierz_rodzicow(populacja, prawdopodobienstwo_krzyzowania, czy_ruletka):
+    #tasujemy funkcje, zeby kolejnosc byla losowa
     random.shuffle(populacja)
+    #liczba osobonikow do krzyzowania
     liczba_do_wyboru = int(prawdopodobienstwo_krzyzowania * len(populacja))
     wybrani_osobnicy = populacja[:liczba_do_wyboru]
     pozostali_osobnicy = populacja[liczba_do_wyboru:]
@@ -93,13 +98,14 @@ def krzyzowanie_genow(rodzice, czy_jednopunktowe):
 # Funkcja zwracająca losowe pary z populacji
 def wybierz_pary(populacja):
     pary = []
+    #tasowanie populacji
     random.shuffle(populacja)
-
     i = 0
+    #tworzymy kolejne pary
     while i < len(populacja) - 1:
         pary.append([populacja[i], populacja[i + 1]])
         i += 2
-
+    #jeśli nieparzysta populacja to ostatni łączy się z pierwszym - dodatkowa para
     if len(populacja) % 2 == 1:
         pary.append([populacja[len(populacja) - 1], populacja[0]])
     return pary
@@ -115,22 +121,25 @@ def nowa_generacja(pary, czy_jednopunktowe):
 def mutuj_populacje(populacja, prawdopodobienstwo):
     random.shuffle(populacja)
     for i in range(int(prawdopodobienstwo * len(populacja))):
+        #losowemu osobnikowi zmienia losowy bit na przeciwny
         populacja[i].invert(random.randint(0, 25))
     return populacja
 
 # Funkcja zwracająca finalną populację wygenerowaną przez algorytm genetyczny
-def algorytm_genetyczny(rozmiar_populacji=30,
+def algorytm_genetyczny(rozmiar_populacji=20,
                         liczba_iteracji=30,
-                        prawdopodobienstwo_krzyzowania=0.8,
-                        prawdopodobienstwo_mutacji=0.4,
+                        prawdopodobienstwo_krzyzowania=0.9,
+                        prawdopodobienstwo_mutacji=0.01,
                         ruletka=True,
                         jednopunktowe=False):
     populacja = []
     for i in range(rozmiar_populacji):
         populacja.append(losowy_osobnik())
     for i in range(liczba_iteracji):
+        #ocalali - osobniki niebrani, rodzice - osobnicy brani do krzyzowania
         ocalali, rodzice = wybierz_rodzicow(populacja, prawdopodobienstwo_krzyzowania, ruletka)
         pary = wybierz_pary(rodzice)
         dzieci = mutuj_populacje(nowa_generacja(pary, jednopunktowe), prawdopodobienstwo_mutacji)
         populacja = ocalali + dzieci
     return populacja
+

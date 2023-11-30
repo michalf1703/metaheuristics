@@ -11,7 +11,6 @@ if __name__ == '__main__':
     maximums_2 = []
     minimums = []
     minimums_2 = []
-
     for i in range(NUMBERS):
         sums = []
         sums_2 = []
