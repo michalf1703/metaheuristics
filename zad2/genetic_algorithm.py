@@ -131,7 +131,7 @@ def algorytm_genetyczny(rozmiar_populacji=20,
                         prawdopodobienstwo_krzyzowania=0.9,
                         prawdopodobienstwo_mutacji=0.01,
                         ruletka=True,
-                        jednopunktowe=False):
+                        jednopunktowe=True):
     populacja = []
     for i in range(rozmiar_populacji):
         populacja.append(losowy_osobnik())
