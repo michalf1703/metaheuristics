@@ -1,8 +1,10 @@
 from math import sqrt
 
+import numpy as np
+
 
 def calculate_distance(p1, p2):
-    return sqrt((p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2)
+    return np.linalg.norm(np.array(p2) - np.array(p1))
 
 
 class Board:
