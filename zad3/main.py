@@ -9,7 +9,7 @@ from Ant import Ant
 from Board import Board
 
 POPULATION_SIZE = 10  # [10, 30, 50]
-RANDOM_FACTOR = 0.01  # [0.01, 0.3]
+RANDOM_FACTOR = 0.3  # [0.01, 0.3]
 ALFA = 1  # [1, 2]
 BETA = 1  # [1, 3]
 ITERATION_NUMBER = 150
