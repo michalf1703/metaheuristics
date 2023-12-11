@@ -1,91 +1,88 @@
 from random import randint
-
 from tqdm import tqdm
-
 import multiprocessing as mp
 import matplotlib.pyplot as plt
+from Mrowka import Mrowka
+from Plansza import Plansza
 
-from Ant import Ant
-from Board import Board
-
-POPULATION_SIZE = 10  # [10, 30, 50]
-RANDOM_FACTOR = 0.3  # [0.01, 0.3]
+ROZMIAR_POPULACJI = 10  # [10, 30, 50]
+CZYNNIK_LOSOWY = 0.3  # [0.3]
 ALFA = 1  # [1, 2]
 BETA = 1  # [1, 3]
-ITERATION_NUMBER = 150
-PHEROMONES_EVAPORATION_FACTOR = 0.5  # [0.1, 0.5]
+LICZBA_ITERACJI = 1000
+CZYNNIK_PAROWANIA_FEROMONOW = 0.1  # [0.1, 0.5]
 
 
-def ant_algorithm(file_path, color, position, results):
-    board = Board(file_path)
-    best_ants = []
+def algorytm_mrowkowy(sciezka_pliku, kolor, pozycja, wyniki):
+    plansza = Plansza(sciezka_pliku)
+    najlepsze_mrowki = []
 
-    for _ in tqdm(range(ITERATION_NUMBER), colour=color, position=position, leave=False):
-        last_place = len(board.places) - 1
-        ants = [Ant(randint(0, last_place)) for _ in range(POPULATION_SIZE)]
-        for _ in range(last_place):
-            for ant in ants:
-                ant.next_step(board, ALFA, BETA, RANDOM_FACTOR)
+    for _ in tqdm(range(LICZBA_ITERACJI), colour=kolor, position=pozycja, leave=False):
+        ostatnie_miejsce = len(plansza.miejsca) - 1
+        mrowki = [Mrowka(randint(0, ostatnie_miejsce)) for _ in range(ROZMIAR_POPULACJI)]
+        for _ in range(ostatnie_miejsce):
+            for mrowka in mrowki:
+                mrowka.nastepny_krok(plansza, ALFA, BETA, CZYNNIK_LOSOWY)
 
-        board.update_pheromones(PHEROMONES_EVAPORATION_FACTOR, ants)
-        best_ants.append(min(ants, key=lambda x: x.distance_traveled(board)))
-    results[position] = [board, best_ants]
+        plansza.aktualizuj_feromony(CZYNNIK_PAROWANIA_FEROMONOW, mrowki)
+        najlepsze_mrowki.append(min(mrowki, key=lambda x: x.odleglosc_przebyta(plansza)))
+    wyniki[pozycja] = [plansza, najlepsze_mrowki]
 
 
-def plot_iterations(results):
+def rysuj_iteracje(wyniki):
     fig = plt.figure()
     fig.set_figheight(20)
     fig.set_figwidth(20)
-    for i in range(len(results)):
-        plot = fig.add_subplot(4, 2, i + 1, title=results[i][0].title)
-        plot.plot(range(1, ITERATION_NUMBER + 1), [ant.distance_traveled(results[i][0]) for ant in (results[i][1])])
-        plt.xlabel("number_of_iterations")
-        plt.ylabel("shortest distance in ant population")
+    for i in range(len(wyniki)):
+        wykres = fig.add_subplot(4, 2, i + 1, title=wyniki[i][0].tytul)
+        wykres.plot(range(1, LICZBA_ITERACJI + 1), [mrowka.odleglosc_przebyta(wyniki[i][0]) for mrowka in wyniki[i][1]])
+        plt.xlabel("numer_iteracji")
+        plt.ylabel("najkrótsza odległość w populacji mrówek")
 
     plt.tight_layout()
     plt.show()
 
 
-def plot_paths(results):
+def rysuj_trasy(wyniki):
     fig = plt.figure()
     fig.set_figheight(20)
     fig.set_figwidth(20)
 
-    for i in range(len(results)):
-        board = results[i][0]
-        best_ants = results[i][1]
-        best_ant = min(best_ants, key=lambda x: x.distance_traveled(board))
-        x_values = [board.positions[place][0] for place in best_ant.visited_places]
-        y_values = [board.positions[place][1] for place in best_ant.visited_places]
+    for i in range(len(wyniki)):
+        plansza = wyniki[i][0]
+        najlepsze_mrowki = wyniki[i][1]
+        najlepsza_mrowka = min(najlepsze_mrowki, key=lambda x: x.odleglosc_przebyta(plansza))
+        x_wartosci = [plansza.pozycje[miejsce][0] for miejsce in najlepsza_mrowka.odwiedzone_miejsca]
+        y_wartosci = [plansza.pozycje[miejsce][1] for miejsce in najlepsza_mrowka.odwiedzone_miejsca]
 
-        plot = fig.add_subplot(4, 2, i + 1, title=results[i][0].title)
-        plot.plot(x_values, y_values, 'ro-')
+        wykres = fig.add_subplot(4, 2, i + 1, title=wyniki[i][0].tytul)
+        wykres.plot(x_wartosci, y_wartosci, 'ro-')
 
-        plt.annotate('START', board.positions[best_ant.visited_places[0]],
+        plt.annotate('START', plansza.pozycje[najlepsza_mrowka.odwiedzone_miejsca[0]],
                      textcoords="offset points", xytext=(5, -5))
-        plt.annotate('END', board.positions[best_ant.visited_places[-1]],
+        plt.annotate('END', plansza.pozycje[najlepsza_mrowka.odwiedzone_miejsca[-1]],
                      textcoords="offset points", xytext=(5, -5))
-        for place in best_ant.visited_places:
-            plt.annotate(place + 1, board.positions[place], textcoords="offset points", xytext=(0, 7), ha='center')
-        plt.xlabel("Najlepsza znaleziona trasa: " + str(best_ant.distance_traveled(board)))
+        for miejsce in najlepsza_mrowka.odwiedzone_miejsca:
+            plt.annotate(miejsce + 1, plansza.pozycje[miejsce], textcoords="offset points", xytext=(0, 7), ha='center')
+        plt.xlabel("Najlepsza znaleziona trasa: " + str(najlepsza_mrowka.odleglosc_przebyta(plansza)))
 
     plt.tight_layout()
     plt.show()
 
 
 if __name__ == '__main__':
-    results = mp.Manager().dict()
-    processes = [mp.Process(target=ant_algorithm, args=("data/A-n32-k5.txt", "black", 0, results)),
-                 mp.Process(target=ant_algorithm, args=("data/A-n80-k10.txt", "blue", 1, results)),
-                 mp.Process(target=ant_algorithm, args=("data/B-n31-k5.txt", "green", 2, results)),
-                 mp.Process(target=ant_algorithm, args=("data/B-n78-k10.txt", "yellow", 3, results)),
-                 mp.Process(target=ant_algorithm, args=("data/P-n16-k8.txt", "white", 4, results)),
-                 mp.Process(target=ant_algorithm, args=("data/P-n76-k5.txt", "red", 5, results))]
+    wyniki = mp.Manager().dict()
+    procesy = [mp.Process(target=algorytm_mrowkowy, args=("data/A-n32-k5.txt", "black", 0, wyniki)),
+               mp.Process(target=algorytm_mrowkowy, args=("data/A-n80-k10.txt", "blue", 1, wyniki)),
+               mp.Process(target=algorytm_mrowkowy, args=("data/B-n31-k5.txt", "green", 2, wyniki)),
+               mp.Process(target=algorytm_mrowkowy, args=("data/B-n78-k10.txt", "yellow", 3, wyniki)),
+               mp.Process(target=algorytm_mrowkowy, args=("data/P-n16-k8.txt", "white", 4, wyniki)),
+               mp.Process(target=algorytm_mrowkowy, args=("data/P-n76-k5.txt", "red", 5, wyniki))]
 
-    for process in processes:
-        process.start()
-    for process in processes:
-        process.join()
+    for proces in procesy:
+        proces.start()
+    for proces in procesy:
+        proces.join()
 
-    plot_iterations([results[key] for key in sorted(results)])
-    plot_paths(results.values())
+    rysuj_iteracje([wyniki[klucz] for klucz in sorted(wyniki)])
+    rysuj_trasy(wyniki.values())
