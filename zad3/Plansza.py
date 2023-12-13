@@ -1,4 +1,3 @@
-from math import sqrt
 import numpy as np
 
 
@@ -9,7 +8,6 @@ def oblicz_odleglosc(p1, p2):
 class Plansza:
     def __init__(self, sciezka_pliku):
         plik = open(sciezka_pliku, "r")
-
         punkty = [[int(i) for i in linia.split(" ")] for linia in plik]
         plik.close()
         self.tytul = sciezka_pliku

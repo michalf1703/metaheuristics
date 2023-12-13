@@ -6,10 +6,10 @@ from Mrowka import Mrowka
 from Plansza import Plansza
 
 ROZMIAR_POPULACJI = 10  # [10, 30, 50]
-CZYNNIK_LOSOWY = 0.3  # [0.3]
+CZYNNIK_LOSOWY = 0.01  # [0.3]
 ALFA = 1  # [1, 2]
 BETA = 1  # [1, 3]
-LICZBA_ITERACJI = 1000
+LICZBA_ITERACJI = 10
 CZYNNIK_PAROWANIA_FEROMONOW = 0.1  # [0.1, 0.5]
 
 
@@ -27,7 +27,6 @@ def algorytm_mrowkowy(sciezka_pliku, kolor, pozycja, wyniki):
         plansza.aktualizuj_feromony(CZYNNIK_PAROWANIA_FEROMONOW, mrowki)
         najlepsze_mrowki.append(min(mrowki, key=lambda x: x.odleglosc_przebyta(plansza)))
     wyniki[pozycja] = [plansza, najlepsze_mrowki]
-
 
 def rysuj_iteracje(wyniki):
     fig = plt.figure()
@@ -68,7 +67,6 @@ def rysuj_trasy(wyniki):
 
     plt.tight_layout()
     plt.show()
-
 
 if __name__ == '__main__':
     wyniki = mp.Manager().dict()
