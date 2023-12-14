@@ -27,7 +27,6 @@ class Mrowka:
     def nastepny_krok(self, plansza, alfa, beta, czynnik_losowy):
         nieodwiedzone_miejsca = [a for a in plansza.miejsca if a not in self.odwiedzone_miejsca]
         obecne_miejsce = self.odwiedzone_miejsca[-1]
-
         if random.random() <= czynnik_losowy:
             self.odwiedzone_miejsca.append(losowa_selekcja(nieodwiedzone_miejsca))
         else:

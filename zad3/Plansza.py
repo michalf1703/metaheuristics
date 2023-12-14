@@ -21,11 +21,13 @@ class Plansza:
         for mrowka in mrowki:
             self._intensyfikuj_feromony(mrowka)
 
+#iteracja przez wszystkie feromony i pomniejszanie ich o czynnik
     def _paruj_feromony(self, czynnik):
         for i in range(len(self.feromony)):
             for j in range(len(self.feromony[0])):
                 self.feromony[i][j] -= self.feromony[i][j] * czynnik
 
+#iteracja przez odwiedzone miejsca - im krotsza trasa im wiecej feromonow
     def _intensyfikuj_feromony(self, mrowka):
         for i in range(len(mrowka.odwiedzone_miejsca) - 1):
             self.feromony[mrowka.odwiedzone_miejsca[i]][mrowka.odwiedzone_miejsca[i + 1]] += (1 / mrowka.odleglosc_przebyta(self))

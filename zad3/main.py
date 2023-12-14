@@ -6,7 +6,7 @@ from Mrowka import Mrowka
 from Plansza import Plansza
 
 ROZMIAR_POPULACJI = 10  # [10, 30, 50]
-CZYNNIK_LOSOWY = 0.01  # [0.3]
+CZYNNIK_LOSOWY = 0.3  # [0.3]
 ALFA = 1  # [1, 2]
 BETA = 1  # [1, 3]
 LICZBA_ITERACJI = 10
@@ -16,14 +16,15 @@ CZYNNIK_PAROWANIA_FEROMONOW = 0.1  # [0.1, 0.5]
 def algorytm_mrowkowy(sciezka_pliku, kolor, pozycja, wyniki):
     plansza = Plansza(sciezka_pliku)
     najlepsze_mrowki = []
-
+#tqdm - pasek postepu
     for _ in tqdm(range(LICZBA_ITERACJI), colour=kolor, position=pozycja, leave=False):
-        ostatnie_miejsce = len(plansza.miejsca) - 1
-        mrowki = [Mrowka(randint(0, ostatnie_miejsce)) for _ in range(ROZMIAR_POPULACJI)]
-        for _ in range(ostatnie_miejsce):
+        liczba_atrakcji = len(plansza.miejsca) - 1
+        #kazda mrowka na losowej atrakcji
+        mrowki = [Mrowka(randint(0, liczba_atrakcji)) for _ in range(ROZMIAR_POPULACJI)]
+        #kazda mrówka odwiedzi kazda atrakcje - liczba ruchow = liczba atrakcji
+        for _ in range(liczba_atrakcji):
             for mrowka in mrowki:
                 mrowka.nastepny_krok(plansza, ALFA, BETA, CZYNNIK_LOSOWY)
-
         plansza.aktualizuj_feromony(CZYNNIK_PAROWANIA_FEROMONOW, mrowki)
         najlepsze_mrowki.append(min(mrowki, key=lambda x: x.odleglosc_przebyta(plansza)))
     wyniki[pozycja] = [plansza, najlepsze_mrowki]
