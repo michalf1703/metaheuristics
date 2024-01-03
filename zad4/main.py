@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 from funkcje import mccormic_function, ackley_function
 
+
 def rysuj_wykres(dziedzina, czastki, funkcja_adaptacji):
     X, Y = meshgrid(linspace(dziedzina[0], dziedzina[1], num=100), linspace(dziedzina[0], dziedzina[1], num=100))
     Z = funkcja_adaptacji(X, Y)
@@ -27,8 +28,8 @@ if __name__ == '__main__':
     BEZWLADNOSC = 0.4
     STALA_POZNAWCZA = 0.3
     STALA_SPOLECZNA = 0.9
-    DZIEDZINA = [-1.5, 4]
-    FUNKCJA_ADAPTACJI = mccormic_function
+    DZIEDZINA = [-5, 5]
+    FUNKCJA_ADAPTACJI = ackley_function
 
     czastki = [Czastka(uniform(DZIEDZINA[0], DZIEDZINA[1]),
                        uniform(DZIEDZINA[0], DZIEDZINA[1]),
@@ -61,8 +62,7 @@ if __name__ == '__main__':
         print(czastka.najlepsza_adaptacja)
         print(czastka.najlepszy_x)
         print(czastka.najlepszy_y)
-        print(mccormic_function(najlepszy_x, najlepszy_y))
+        print(ackley_function(najlepszy_x,najlepszy_y))
         print("---------------------------")
     najlepsza_czastka = max(czastki, key=lambda c: c.najlepsza_adaptacja)
     print("Najlepsza adaptacja:", najlepsza_czastka.najlepsza_adaptacja)
-    print(mccormic_function(-0.54719, -1.54719))

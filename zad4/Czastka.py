@@ -10,11 +10,11 @@ class Czastka:
         self.dziedzina = dziedzina
         self.predkosc_x = 0
         self.predkosc_y = 0
-        self.x = max(min(x, dziedzina[1]), dziedzina[0])
-        self.y = max(min(y, dziedzina[1]), dziedzina[0])
+        self.x = x
+        self.y = y
         self.aktualna_adaptacja = self.oblicz_adaptacje()
-        self.najlepszy_x = self.x
-        self.najlepszy_y = self.y
+        self.najlepszy_x = x
+        self.najlepszy_y = y
         self.najlepsza_adaptacja = self.aktualna_adaptacja
 
     def oblicz_adaptacje(self):
